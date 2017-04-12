@@ -1,11 +1,12 @@
 const React = require('react');
+import {observer, inject} from 'mobx-react';
 
 const ListGridItems = require('ListGridItems');
 const SearchGidAPI = require('SearchGidAPI');
 const GridItemSearch = require('GridItemSearch');
+import filteredGridStore from 'filteredGridStore';
 
-//console.log(SearchGidAPI.getGridGit());
-
+@observer(['filteredGridStore'])
 class SearchApp extends React.Component{
     constructor(props){
         super(props);
@@ -17,13 +18,6 @@ class SearchApp extends React.Component{
             searchText: ''
         }
     }
-
-    onhandleSearch = (searchText) => {
-        //console.log(searchText);
-        this.setState({
-            searchText: searchText
-        });
-    };
 
     hendleSearch = () => {
         if(!this.state.grid){
@@ -42,17 +36,19 @@ class SearchApp extends React.Component{
     };
 
     render(){
-        const {grid, errorMessage, searchText, isLoading} = this.state;
+        const {grid, errorMessage, isLoading} = this.state;
+        const searchText = this.props.filteredGridStore.searchText || "";
         console.log('grid: ', grid);
         const showListGrid = () => {
             if (isLoading) {
                 return <div>Loading...</div>
             } else if(grid) {
                 const filteredGrid = SearchGidAPI.filterItems(grid, searchText);
+                filteredGridStore.setFilteredGrid(filteredGrid);
                 return (
                     <div>
-                        <GridItemSearch onSearch={this.onhandleSearch}/>
-                        <ListGridItems grid={filteredGrid}/>
+                        <GridItemSearch />
+                        <ListGridItems />
                     </div>
                 )
             } else if(errorMessage){

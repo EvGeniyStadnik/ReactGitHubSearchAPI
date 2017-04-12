@@ -1,4 +1,5 @@
 const React = require('react');
+import filteredGridStore from 'filteredGridStore'
 
 class GridItemSearch extends React.Component{
     constructor(props){
@@ -7,7 +8,7 @@ class GridItemSearch extends React.Component{
 
     handleChange = () => {
         let searchText = this.refs.searchText.value;
-        this.props.onSearch(searchText);
+        filteredGridStore.onhandleSearch(searchText);
     };
 
     render(){
